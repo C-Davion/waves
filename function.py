@@ -8,13 +8,15 @@ from source import g1,g2,g3
 A=1
 B=1
 L=10
-poro=0.99
-resitance=14000
-tort=1.02
 gp=7/5
 c0=340 #vitesse du son dans l'air en m/s
 p0=1.292 # masse vol de l'air en kg/m^3
 deltax=0.01
+
+poro=0.99
+resitance=14000
+tort=1.02
+
 
 
 e0=1/(c0**2)
@@ -80,7 +82,7 @@ def fourier(g,k,w):
 
 def compute_fourier_coefficient(g,k, w):
     # Define the integrand for the Fourier coefficient
-    integrand = lambda y: g(y, w) * np.exp(-1j * k * (2 * np.pi / (2 * L) * y))
+    integrand = lambda y: g(y, w) * np.exp(-1j * k  * y)
 
     # Perform the integration over the range [-L, L]
     result, _ = scipy.integrate.quad(integrand, -L, L)
@@ -129,7 +131,7 @@ def sum_ek(alpha,w,g):
 
 
 def minimise(g): #modify the function with the correct source, do not forget to modify the labels as well
-    initial_alpha=[0,0]
+    initial_alpha=[1,1.5]
     w_range=np.linspace(600,30000,100)
     alpha_real=[]
     alpha_img=[]
@@ -142,10 +144,10 @@ def minimise(g): #modify the function with the correct source, do not forget to 
         alpha_real.append(result.x[0])
         alpha_img.append(result.x[1])
     
-    plt.plot(w_range, alpha_real, color='red', label=f'partie Reelle de alpha pour {g.__name__} ')  
+    #plt.plot(w_range, alpha_real, color='red', label=f'partie Reelle de alpha pour {g.__name__} ')  
     plt.plot(w_range,alpha_img,color='blue',label=f"partie img de alpha pour {g.__name__}")
     plt.xlabel('w')
-    plt.ylabel('Re(a)')
+    plt.ylabel('Im(a)')
     plt.legend()
 
     plt.show()
@@ -167,4 +169,5 @@ minimise(g1)
 
 #init guess pour g2 = 0 0
 #init guess pour g3 1 1.5
+#init guess pour g1 1 1.5, pas optimiser car on a trop de 0, sin est fonction propre du laplacien
     

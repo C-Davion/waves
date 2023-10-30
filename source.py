@@ -9,7 +9,8 @@ L=10
 def g1(y,w,amplitude=1.0,c=1):  # modéliser le bruit causer par une aile d'avion, la freq d'oscillation va dépendre du matériel de l'aile et de où on se situe 
     try:
         if -L <= y <= L:
-            return amplitude * sin(w * y/c)
+            k=w/2.0 #nombre d'onde
+            return amplitude * sin(k* y/c)
         else:
             raise ValueError("Error: y is outside the valid range [-L, L]")
     except ValueError as e:
