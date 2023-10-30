@@ -33,11 +33,11 @@ def g2(y,w, amplitude=1.0): # 1 si freq dans [20,20000], pour modéliser une sal
     except ValueError as e:
         return str(e)
 
-def g3(y,w, amplitude =1.0,w0=100): #sirène , sous la forme d'un gaussienne fenetrée
+def g3(y,w, amplitude =1.0,w0=3000,sigma=10): #sirène , sous la forme d'un gaussienne fenetrée
     try:
         if -L<=y<=L :
             if -L/2 <=y <=L/2 :
-                return amplitude* exp(-(w-w0)**2/2)
+                return amplitude* exp(0.5*((w-w0)/sigma)**2)
             else: return 0
         else:
             raise ValueError("Error: y is outside the valide range [-L,L]")
