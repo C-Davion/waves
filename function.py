@@ -13,9 +13,27 @@ c0=340 #vitesse du son dans l'air en m/s
 p0=1.292 # masse vol de l'air en kg/m^3
 deltax=0.01
 
+
+'''
+#melaline
 poro=0.99
 resitance=14000
 tort=1.02
+'''
+
+'''
+#Carbon fiber composite values taken from https://hal.science/hal-02357714/document: article ref SFG1aBG
+poro=0.95
+tort=24
+resitance=1.4*10**10
+'''
+
+#ITFH, value taken from the coursebook
+poro=0.94
+tort=1.44
+resitance=7040
+
+
 
 
 
@@ -71,23 +89,12 @@ def chi_and_gamma(k,alpha,w,gk):
     gamma=gk*gamma
     return chi,gamma
 
-def fourier(g,k,w):
-    var=complex(0,1)
-    error=complex(0,0)
-    def temp(y):
-        return g(y,w)*np.exp(-var*np.pi*k*y/L) #calcul du k-ieme coeff de fourier
-    res,error=scipy.integrate.quad(temp,-L,L)
-    return complex(res,0)
+
 
 
 def compute_fourier_coefficient(g,k, w):
-    # Define the integrand for the Fourier coefficient
     integrand = lambda y: g(y, w) * np.exp(-1j * k  * y)
-
-    # Perform the integration over the range [-L, L]
     result, _ = scipy.integrate.quad(integrand, -L, L)
-
-    # Divide by 2*L to compute the coefficient
     ck = complex(result.real / (2 * L), result.imag / (2 * L))
 
     return ck
@@ -130,7 +137,7 @@ def sum_ek(alpha,w,g):
     return res
 
 
-def minimise(g): #modify the function with the correct source, do not forget to modify the labels as well
+def minimise(g): #modify the function with the correct source
     initial_alpha=[1,1.5]
     w_range=np.linspace(600,30000,100)
     alpha_real=[]
@@ -144,26 +151,18 @@ def minimise(g): #modify the function with the correct source, do not forget to 
         alpha_real.append(result.x[0])
         alpha_img.append(result.x[1])
     
-    #plt.plot(w_range, alpha_real, color='red', label=f'partie Reelle de alpha pour {g.__name__} ')  
+    plt.plot(w_range, alpha_real, color='red', label=f'partie Reelle de alpha pour {g.__name__} ')  
     plt.plot(w_range,alpha_img,color='blue',label=f"partie img de alpha pour {g.__name__}")
     plt.xlabel('w')
-    plt.ylabel('Im(a)')
+    #plt.ylabel('Im(a)')
     plt.legend()
 
     plt.show()
-''''
-def optimal_alpha(w,N,g):
-    init=[0,0]
-    def optimize_e(xy):
-        x,y=xy
-        return abs(e(x+1j*y,w,N,g))
-    result = minimize(optimize_e,init,method='L-BFGS-B')
-    return result
-'''
 
 
 
-minimise(g1)
+
+minimise(g3)
 #print(compute_fourier_coefficient(2,L,1000))
 
 
