@@ -121,29 +121,29 @@ def ek(alpha,k,w,gk):
 def sum_ek(alpha,w,g):
     res=complex(0,0)
     floored=int(L/deltax)
-    for n in range(-floored,floored+1): # summing over too much points leads to floating point overflow. With 5, it leads to a lesser precision.
+    for n in range(-5,5+1): # summing over too much points leads to floating point overflow. With 5, it leads to a lesser precision.
         k=n*np.pi/L
         gk=compute_fourier_coefficient(g,k,w)
         res+=ek(alpha,k,w,gk)
     return res
 
 
-def minimise(): #modify the function with the correct source, do not forget to modify the labels as well
+def minimise(g): #modify the function with the correct source, do not forget to modify the labels as well
     initial_alpha=[0,0]
     w_range=np.linspace(600,30000,100)
-    g=g1
     alpha_real=[]
     alpha_img=[]
     for w in w_range:
         def objective_function(xy):
             x,y=xy
-            res=sum_ek(x+1j*y,w,g2)
+            res=sum_ek(x+1j*y,w,g)
             return np.abs(res)
         result=scipy.optimize.minimize(objective_function,initial_alpha,method='L-BFGS-B')
         alpha_real.append(result.x[0])
         alpha_img.append(result.x[1])
     
-    plt.plot(w_range, alpha_real, color='red', label='partie Reele de alpha pour g2')  
+    plt.plot(w_range, alpha_real, color='red', label=f'partie Reelle de alpha pour {g.__name__} ')  
+    plt.plot(w_range,alpha_img,color='blue',label=f"partie img de alpha pour {g.__name__}")
     plt.xlabel('w')
     plt.ylabel('Re(a)')
     plt.legend()
@@ -161,9 +161,10 @@ def optimal_alpha(w,N,g):
 
 
 
-minimise()
+minimise(g1)
 #print(compute_fourier_coefficient(2,L,1000))
 
 
-
+#init guess pour g2 = 0 0
+#init guess pour g3 1 1.5
     

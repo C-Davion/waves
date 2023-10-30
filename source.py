@@ -1,17 +1,12 @@
-from numpy import pi,sin, exp
+from numpy import pi,sin, exp,sqrt
 from scipy import signal
 
-#g-> g(w,y)
 
-#ek-> ek(w,y)
 L=10
 
-#q2
-
-#urban noise/underwater noise/
 
 # on notera w pour omega
-def g1(y,w,amplitude=1.0,c=1.0):  # modéliser le bruit causer par une aile d'avion, la freq d'oscillation va dépendre du matériel de l'aile et de où on se situe 
+def g1(y,w,amplitude=1.0,c=1):  # modéliser le bruit causer par une aile d'avion, la freq d'oscillation va dépendre du matériel de l'aile et de où on se situe 
     try:
         if -L <= y <= L:
             return amplitude * sin(w * y/c)
@@ -37,7 +32,8 @@ def g3(y,w, amplitude =1.0,w0=3000,sigma=10): #sirène , sous la forme d'un gaus
     try:
         if -L<=y<=L :
             if -L/2 <=y <=L/2 :
-                return amplitude* exp(0.5*((w-w0)/sigma)**2)
+                amplitude=amplitude/(sqrt(2*pi)*sigma)
+                return amplitude*exp(-0.5*((w-w0)/sigma)**2)
             else: return 0
         else:
             raise ValueError("Error: y is outside the valide range [-L,L]")
